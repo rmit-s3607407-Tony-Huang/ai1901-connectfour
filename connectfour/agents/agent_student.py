@@ -1,10 +1,19 @@
-from connectfour.agents.computer_player import RandomAgent
+from connectfour.agents.computer_player import Agent
 import random
 
-class StudentAgent(RandomAgent):
+ROW_COUNT = 6
+COLUMN_COUNT = 7
+WINDOW_LENGTH = 4
+
+PLAYER0 = 0
+PLAYER1 = 1
+PLAYER2 = 2
+
+
+class StudentAgent(Agent):
     def __init__(self, name):
         super().__init__(name)
-        self.MaxDepth = 1
+        self.MaxDepth = 3
 
 
     def get_move(self, board):
@@ -15,7 +24,6 @@ class StudentAgent(RandomAgent):
         Returns:
             A tuple of two integers, (row, col)
         """
-
         valid_moves = board.valid_moves()
         vals = []
         moves = []
@@ -87,6 +95,47 @@ class StudentAgent(RandomAgent):
             next_state(turn)
             winner()
         """
-				
-        return random.uniform(0, 1)
+        score = 0
+        #print(board.board)
 
+        ##Score Center Array
+
+
+        ##Score Horizontal
+        for row in board.board:
+            print(row)
+            for col in range(COLUMN_COUNT-3):
+                window = row[col:col+WINDOW_LENGTH]
+                score += self.evaluateWindow(window)
+
+        print('\n')
+        ##Score Vertical
+        for col in board.board:
+            #print(col)
+            for row in range(ROW_COUNT-3):
+                window = col[row:row+WINDOW_LENGTH]
+                score += self.evaluateWindow(window)
+
+        ##Score Diagonal
+        print(score)
+        print('\n')
+        return score
+
+    def evaluateWindow(self, window):
+        score = 0
+
+        """if game.player_one == self:
+            print('HelloWorld')
+            game.player_one"""
+
+        if window.count(PLAYER1) == 4:
+            score += 100
+        elif window.count(PLAYER1) == 3 and window.count(PLAYER0) == 1:
+            score += 5
+        elif window.count(PLAYER1) == 2 and window.count(PLAYER0) == 2:
+            score += 2
+
+        if window.count(PLAYER2) == 3 and window.count(PLAYER0) == 1:
+            score -= 4
+
+        return score

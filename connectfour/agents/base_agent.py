@@ -44,7 +44,6 @@ class TestAgent(RandomAgent):
 
             if row >= 0:
                 break
-
         return row, col
 
     def evaluateBoardState(self, board, player):
@@ -55,5 +54,4 @@ class TestAgent(RandomAgent):
             If we have won the game, return 1.
             If neither of the players has won, return a random number.
         """
-        
         return 0
