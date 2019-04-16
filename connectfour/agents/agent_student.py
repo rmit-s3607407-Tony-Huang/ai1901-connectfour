@@ -29,6 +29,7 @@ class StudentAgent(Agent):
         moves = []
 
         for move in valid_moves:
+            #print(move)
             next_state = board.next_state(self.id, move[1])
             moves.append( move )
             vals.append( self.dfMiniMax(next_state, 1) )
@@ -40,6 +41,7 @@ class StudentAgent(Agent):
         # Goal return column with maximized scores of all possible next states
         
         if depth == self.MaxDepth:
+            print(self.evaluateBoardState(board))
             return self.evaluateBoardState(board)
 
         valid_moves = board.valid_moves()
@@ -96,46 +98,55 @@ class StudentAgent(Agent):
             winner()
         """
         score = 0
-        #print(board.board)
 
         ##Score Center Array
 
-
         ##Score Horizontal
         for row in board.board:
-            print(row)
-            for col in range(COLUMN_COUNT-3):
+            #print('\n')
+            for col in range(board.width-3):
                 window = row[col:col+WINDOW_LENGTH]
-                score += self.evaluateWindow(window)
-
-        print('\n')
+                score += self.evaluateWindowState(window, self.id)
+                # print(window)
+        #print('\n')
         ##Score Vertical
-        for col in board.board:
-            #print(col)
-            for row in range(ROW_COUNT-3):
-                window = col[row:row+WINDOW_LENGTH]
-                score += self.evaluateWindow(window)
 
-        ##Score Diagonal
-        print(score)
-        print('\n')
+        for col in range(board.width):
+            temp_column = list()
+            temp_column.clear()
+            for row in range(board.height):
+                temp_column.append(board.board[row][col])
+            for j in range(board.height - 3):
+                window = temp_column[j: j+WINDOW_LENGTH]
+                score += self.evaluateWindowState(window, self.id)
+                #print(window)
+
+        ##Score Diagonal Up
+
+        ##Score Diagonal Down
+        #print('score = ' )
+        #print(score)
+        #print('\n')
         return score
 
-    def evaluateWindow(self, window):
+    def evaluateWindowState(self, window, player):
         score = 0
 
-        """if game.player_one == self:
-            print('HelloWorld')
-            game.player_one"""
+        opponent = PLAYER2
+        if player == PLAYER2:
+            opponent = PLAYER1
 
-        if window.count(PLAYER1) == 4:
+        if window.count(player) == 4:
+            score += 1000
+        elif window.count(player) == 3 and window.count(PLAYER0) == 1:
             score += 100
-        elif window.count(PLAYER1) == 3 and window.count(PLAYER0) == 1:
-            score += 5
-        elif window.count(PLAYER1) == 2 and window.count(PLAYER0) == 2:
-            score += 2
+        elif window.count(player) == 2 and window.count(PLAYER0) == 2:
+            score += 10
 
-        if window.count(PLAYER2) == 3 and window.count(PLAYER0) == 1:
-            score -= 4
-
+        if window.count(opponent) == 4:
+            score -= 1001
+        elif window.count(opponent) == 3 and window.count(PLAYER0) == 1:
+            score -= 101
+        elif window.count(opponent) == 2 and window.count(PLAYER0) == 2:
+            score -= 11
         return score
