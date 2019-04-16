@@ -41,7 +41,7 @@ class StudentAgent(Agent):
         # Goal return column with maximized scores of all possible next states
         
         if depth == self.MaxDepth:
-            print(self.evaluateBoardState(board))
+            #print(self.evaluateBoardState(board))
             return self.evaluateBoardState(board)
 
         valid_moves = board.valid_moves()
@@ -99,7 +99,27 @@ class StudentAgent(Agent):
         """
         score = 0
 
-        ##Score Center Array
+        ##Skew Middle Rows
+        count = board.board[2].count(self.id)
+        count1 = board.board[3].count(self.id)
+        count2 = 0
+        count3 = 0
+        count4 = 0
+
+        score += count*5 + count1*5
+
+        ##Skew Middle Column
+        for row in board.board:
+            #print(row[1])
+            if row[2]==self.id:
+                count2+1
+            if row[3]==self.id:
+                count3+1
+            if row[4]==self.id:
+                count4+1
+
+        score += 5*count2 + 7*count3 + 5*count4
+
 
         ##Score Horizontal
         for row in board.board:
@@ -149,4 +169,5 @@ class StudentAgent(Agent):
             score -= 101
         elif window.count(opponent) == 2 and window.count(PLAYER0) == 2:
             score -= 11
+
         return score
