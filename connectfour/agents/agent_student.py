@@ -1,5 +1,6 @@
 from connectfour.agents.computer_player import Agent
 import random
+import math
 
 ROW_COUNT = 6
 COLUMN_COUNT = 7
@@ -13,7 +14,7 @@ PLAYER2 = 2
 class StudentAgent(Agent):
     def __init__(self, name):
         super().__init__(name)
-        self.MaxDepth = 4
+        self.MaxDepth = 3
 
 
     def get_move(self, board):
@@ -29,15 +30,14 @@ class StudentAgent(Agent):
         moves = []
 
         for move in valid_moves:
-            #print(move)
             next_state = board.next_state(self.id, move[1])
             moves.append( move )
-            vals.append( self.dfMiniMax(next_state, 1) )
+            vals.append( self.dfMiniMax(next_state, 1, -math.inf, math.inf) )
 
         bestMove = moves[vals.index( max(vals) )]
         return bestMove
 
-    def dfMiniMax(self, board, depth):
+    def dfMiniMax(self, board, depth, alpha, beta):
         # Goal return column with maximized scores of all possible next states
         
         if depth == self.MaxDepth:
@@ -49,15 +49,24 @@ class StudentAgent(Agent):
         moves = []
 
         for move in valid_moves:
+            #print(move)
             if depth % 2 == 1:
                 next_state = board.next_state(self.id % 2 + 1, move[1])
             else:
                 next_state = board.next_state(self.id, move[1])
                 
             moves.append( move )
-            vals.append( self.dfMiniMax(next_state, depth + 1) )
+            vals.append( self.dfMiniMax(next_state, depth + 1, alpha, beta) )
+            print(vals)
+            if depth % 2 == 1:
+                beta = min(min(vals), beta)
+                if alpha >= beta:
+                    break
+            else:
+                alpha = max(alpha, max(vals))
+                if alpha >= beta:
+                    break
 
-        
         if depth % 2 == 1:
             bestVal = min(vals)
         else:
@@ -108,25 +117,21 @@ class StudentAgent(Agent):
 
         ##Skew Middle Column
         for row in board.board:
-            #print(row[1])
-            if row[2]==self.id:
+            if row[2] == self.id:
                 count2+1
-            if row[3]==self.id:
+            if row[3] == self.id:
                 count3+1
-            if row[4]==self.id:
+            if row[4] == self.id:
                 count4+1
 
         score += count*2 + count1*2 + count2*3 + count3*8 + count4*3
 
-
         ##Score Horizontal
         for row in board.board:
-            #print('\n')
             for col in range(board.width-3):
                 window = row[col:col+WINDOW_LENGTH]
                 score += self.evaluateWindowState(window, self.id)
-                # print(window)
-        #print('\n')
+
         ##Score Vertical
         for col in range(board.width):
             temp_column = list()
@@ -155,9 +160,9 @@ class StudentAgent(Agent):
                     window.append(board.board[row+i][col+i])
                 score += self.evaluateWindowState(window, self.id)
 
-        print('score = ' )
-        print(score)
-        print('\n')
+        '''for row in board.board:
+            print(row)
+        print('score = ', score)'''
         return score
 
     def evaluateWindowState(self, window, player):
