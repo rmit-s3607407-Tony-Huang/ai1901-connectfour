@@ -2,19 +2,15 @@ from connectfour.agents.computer_player import Agent
 import random
 import math
 
-ROW_COUNT = 6
-COLUMN_COUNT = 7
-WINDOW_LENGTH = 4
-
 PLAYER0 = 0
 PLAYER1 = 1
 PLAYER2 = 2
-
+WINDOW_LENGTH = 4
 
 class StudentAgent(Agent):
     def __init__(self, name):
         super().__init__(name)
-        self.MaxDepth = 3
+        self.MaxDepth = 5
 
 
     def get_move(self, board):
@@ -57,6 +53,8 @@ class StudentAgent(Agent):
                 
             moves.append( move )
             vals.append( self.dfMiniMax(next_state, depth + 1, alpha, beta) )
+            for row in board.board:
+                print(row)
             print(vals)
             if depth % 2 == 1:
                 beta = min(min(vals), beta)
