@@ -13,7 +13,7 @@ PLAYER2 = 2
 class StudentAgent(Agent):
     def __init__(self, name):
         super().__init__(name)
-        self.MaxDepth = 3
+        self.MaxDepth = 4
 
 
     def get_move(self, board):
@@ -41,7 +41,7 @@ class StudentAgent(Agent):
         # Goal return column with maximized scores of all possible next states
         
         if depth == self.MaxDepth:
-            print('player', self.id, self.evaluateBoardState(board))
+            #print('player', self.id, self.evaluateBoardState(board))
             return self.evaluateBoardState(board)
 
         valid_moves = board.valid_moves()
@@ -67,13 +67,13 @@ class StudentAgent(Agent):
 
     def evaluateBoardState(self, board):
         """
-        Your evaluation function should look at the current state and return a score for it. 
+        Your evaluation function should look at the current state and return a score for it.
         As an example, the random agent provided works as follows:
             If the opponent has won this game, return -1.
             If we have won the game, return 1.
             If neither of the players has won, return a random number.
         """
-        
+
         """
         These are the variables and functions for board objects which may be helpful when creating your Agent.
         Look into board.py for more information/descriptions of each, or to look for any other definitions which may help you.
@@ -106,8 +106,6 @@ class StudentAgent(Agent):
         count3 = 0
         count4 = 0
 
-        score += count*2 + count1*2
-
         ##Skew Middle Column
         for row in board.board:
             #print(row[1])
@@ -118,7 +116,7 @@ class StudentAgent(Agent):
             if row[4]==self.id:
                 count4+1
 
-        score += count2*3 + count3*8 + count4*3
+        score += count*2 + count1*2 + count2*3 + count3*8 + count4*3
 
 
         ##Score Horizontal
@@ -130,7 +128,6 @@ class StudentAgent(Agent):
                 # print(window)
         #print('\n')
         ##Score Vertical
-
         for col in range(board.width):
             temp_column = list()
             temp_column.clear()
@@ -142,11 +139,25 @@ class StudentAgent(Agent):
                 #print(window)
 
         ##Score Diagonal Up
+        for col in range(board.width + 1 - WINDOW_LENGTH):
+            for row in range(board.height + 1 - WINDOW_LENGTH):
+                window.clear()
+                for i in range(WINDOW_LENGTH):
+                    window.append(board.board[board.height - 1 - row - i][col + i])
+                score += self.evaluateWindowState(window, self.id)
+                #print(window)
 
         ##Score Diagonal Down
-        #print('score = ' )
-        #print(score)
-        #print('\n')
+        for col in range(board.width + 1 - WINDOW_LENGTH):
+            for row in range(board.height + 1 - WINDOW_LENGTH):
+                window.clear()
+                for i in range(WINDOW_LENGTH):
+                    window.append(board.board[row+i][col+i])
+                score += self.evaluateWindowState(window, self.id)
+
+        print('score = ' )
+        print(score)
+        print('\n')
         return score
 
     def evaluateWindowState(self, window, player):
@@ -157,7 +168,7 @@ class StudentAgent(Agent):
             opponent = PLAYER1
 
         if window.count(player) == 4:
-            score += 1000
+            score += 1010
         elif window.count(player) == 3 and window.count(PLAYER0) == 1:
             score += 100
         elif window.count(player) == 2 and window.count(PLAYER0) == 2:
