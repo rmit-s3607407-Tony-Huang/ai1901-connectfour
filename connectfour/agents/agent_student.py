@@ -53,15 +53,19 @@ class StudentAgent(Agent):
                 
             moves.append( move )
             vals.append( self.dfMiniMax(next_state, depth + 1, alpha, beta) )
-            for row in board.board:
-                print(row)
+
+            #for row in board.board:
+            #    print(row)
             print(vals)
+
             if depth % 2 == 1:
                 beta = min(min(vals), beta)
+                print('beta = ', beta)
                 if alpha >= beta:
                     break
             else:
                 alpha = max(alpha, max(vals))
+                print('alpha = ', alpha)
                 if alpha >= beta:
                     break
 
@@ -166,12 +170,13 @@ class StudentAgent(Agent):
     def evaluateWindowState(self, window, player):
         score = 0
 
-        opponent = PLAYER2
         if player == PLAYER2:
             opponent = PLAYER1
+        else:
+            opponent = PLAYER2
 
         if window.count(player) == 4:
-            score += 1010
+            score += 1000
         elif window.count(player) == 3 and window.count(PLAYER0) == 1:
             score += 100
         elif window.count(player) == 2 and window.count(PLAYER0) == 2:
