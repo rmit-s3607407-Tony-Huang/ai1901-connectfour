@@ -1,5 +1,4 @@
 from connectfour.agents.computer_player import Agent
-import random
 import math
 
 PLAYER0 = 0
@@ -14,13 +13,6 @@ class StudentAgent(Agent):
         self.MaxDepth = 5
 
     def get_move(self, board):
-        """
-        Args:
-            board: An instance of `Board` that is the current state of the board.
-
-        Returns:
-            A tuple of two integers, (row, col)
-        """
         valid_moves = board.valid_moves()
         vals = []
         moves = []
@@ -29,13 +21,12 @@ class StudentAgent(Agent):
             next_state = board.next_state(self.id, move[1])
             moves.append( move )
             vals.append( self.dfMiniMax(next_state, 1, -math.inf, math.inf) )
-
+        print("Player", self.id, max(vals))
         bestMove = moves[vals.index( max(vals) )]
         return bestMove
 
     # Goal return column with maximized scores of all possible next states
     def dfMiniMax(self, board, depth, alpha, beta):
-
         # Check to see if there is a winning move, so it won't evaluate nodes that are deeper than needed
         if self.id == PLAYER2:
             opponent = PLAYER1
