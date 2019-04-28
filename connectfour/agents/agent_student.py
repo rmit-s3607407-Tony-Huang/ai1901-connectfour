@@ -19,10 +19,10 @@ class StudentAgent(Agent):
 
         for move in valid_moves:
             next_state = board.next_state(self.id, move[1])
-            moves.append( move )
-            vals.append( self.dfMiniMax(next_state, 1, -math.inf, math.inf) )
-        #print("Player", self.id, max(vals))
-        bestMove = moves[vals.index( max(vals) )]
+            moves.append(move)
+            vals.append(self.dfMiniMax(next_state, 1, -math.inf, math.inf))
+        print("Player", self.id, vals)
+        bestMove = moves[vals.index(max(vals))]
         return bestMove
 
     # Goal return column with maximized scores of all possible next states
@@ -52,9 +52,8 @@ class StudentAgent(Agent):
                 next_state = board.next_state(self.id % 2 + 1, move[1])
             else:
                 next_state = board.next_state(self.id, move[1])
-                
-            moves.append( move )
-            vals.append( self.dfMiniMax(next_state, depth + 1, alpha, beta) )
+            moves.append(move)
+            vals.append(self.dfMiniMax(next_state, depth + 1, alpha, beta))
 
             # Alpha Beta Pruning
             if depth % 2 == 1:
@@ -85,7 +84,7 @@ class StudentAgent(Agent):
                 count += 1
         score += count*50
 
-        # Scoring is done by extracting window of 4 and passing it through a function to return a score
+        # Scoring is done by extracting window of 4 and passing it through a function to return a score for that window
         # Score Horizontal
         for row in board.board:
             for col in range(board.width-3):
